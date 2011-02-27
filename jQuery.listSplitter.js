@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // listSplitterSelect - A jQuery Plugin to enable lists to be filtered
-// v 0.1, requires jQuery 1.3.2 or later (may work with jQuery 1.3, but untested)
+// v 0.2, requires jQuery 1.3.2 or later (may work with earlier versions, but untested)
 //
 // To style use jQuery ui themeroller, http://jqueryui.com/themeroller/, being sure to include stules for ui-tabs  
 //
@@ -52,7 +52,10 @@
  initialView (string, default '')	- What sublist to show on page load. Defaults to showing the entire list
  */  
 
+/* New in this version
+- Support for ol as well as ul lists
 
+*/
 // ----------------------------------------------------------------------------
 
 (function($) { 
@@ -78,6 +81,7 @@
 			createNav();
 			addListeners();
 			setInitialView();
+			
 			function setInitialView () {
 				if(pars.excludeList)
 				{
@@ -95,7 +99,7 @@
 			function catListContains(classString) {
 				for(var i=0, il = categoryArray.length;i<il;i++)
 				{
-					if (categoryArray[i].cssClass ==classString)
+					if (categoryArray[i].cssClass == classString)
 					{
 						return true;
 					}
@@ -107,8 +111,7 @@
 				$('>ul.ui-widget-header a', container).click(function() {
 					var li = $(this).parent();
 					if(li.not('.ui-state-active'));
-					{
-						
+					{				
 						li.addClass('ui-state-active ui-tabs-selected').siblings().removeClass('ui-state-active ui-tabs-selected');
 						var filter = $(this).attr('href');
 						if(filter.length>1)
@@ -119,7 +122,7 @@
 							} else { //ie gives the full URL
 								filter = filter.split('/').reverse()[0].split('#').reverse()[0];
 							}
-							$('>ul:not(".ui-widget-header")>li', container).each(function() {
+							$('>:not(".ui-widget-header")>li', container).each(function() {
 								if($(this).hasClass(filter))
 								{
 									$(this).removeClass('ui-tabs-hide');
@@ -128,7 +131,7 @@
 								}
 							});
 						} else {
-							$('>ul:not(".ui-widget-header")>li', container).removeClass('ui-tabs-hide');
+							$('>:not(".ui-widget-header")>li', container).removeClass('ui-tabs-hide');
 						}
 					} 
 					return false;
@@ -146,8 +149,6 @@
 				container.prepend(nav);
 			}			
 		});
-		
-		
 		
 		function getClassList(list) {
 			var classArray = [];
@@ -181,8 +182,6 @@
 					classArray.splice(i, 1);
 					i--;
 					il--;
-					
-					
 				} else {
 					if(titleObj[classArray[i]])
 					{
@@ -193,34 +192,25 @@
 				}
 			}
 			if(pars.sort &&(pars.sort == 'asc' || pars.sort == 'desc')) {
-				
 				classArray = classArray.sort(function(a,b) {
-					
-					var testArray = [a.title, b.title];
-				
+					var testArray = [a.title, b.title];	
 					testArray = testArray.sort();
 					if(testArray[0] == a.title)
 					{
-				
 						return -1;
 					} else {
-			
 						return 1
 					} 
 				});
 				if (pars.sort == 'desc')
 				classArray.reverse();
-			
 			}
-		
 			if(pars.includeShowAll)
 			{
 				classArray.unshift({cssClass:'', title:'Show all'});
 			}
 			return classArray;
 		}
-
-
 	};
 })(jQuery);
 	
